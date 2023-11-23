@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="main.js" defer></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <form>
+    <div class="input-container">
+      <label for="email">Enter Email: </label>
+      <input type="email" name="email" id="email" placeholder="email address">
+    </div>
+    <div class="input-container">
+      <label for="country">Select country:</label>
+      <select name="country" id="country">
+        <option value="">--Please select your country--</option>
+        <option value="usa">United States</option>
+        <option value="mx">Mexico</option>
+        <option value="uk">United Kingdom</option>
+        <option value="jp">Japan</option>
+      </select>
+    </div>
+    <div class="input-container">
+      <label for="zip-code">Enter Zip Code:</label>
+      <input type="number" name="zip-code" id="zip-code" placeholder="zip code">
+    </div>
+    <div class="input-container">
+      <label for="password">Enter Password:</label>
+      <input type="password" name="password" id="password" placeholder="password">
+    </div>
+    <div class="input-container">
+      <label for="password-conf">Confirm Password:</label>
+      <input type="password" name="password-conf" id="password-conf" placeholder="confirm password">
+    </div>
+
+    <div class="input-container">
+      <button id="send-button">Send</button>
+    </div>
+  </form>
+</body>
+</html>
