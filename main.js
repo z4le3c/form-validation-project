@@ -12,85 +12,80 @@ const passConfInvalidMessage = document.querySelector(
 )
 const sendButton = document.querySelector('#send-button')
 
-emailInput.addEventListener('focusout', () => {
-  if (emailInput.value == '' || emailInput.validity.typeMismatch) {
-    emailInvalidMessage.textContent =
-      'provide a valid email, with this format email@example'
-    emailInput.classList.remove('valid')
-    emailInput.classList.add('invalid')
+const zipRegex = /^\d{5}(?:-\d{4})?$/
+const passRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+{}|:;<>,.?~\\-])[A-Za-z\d!@#$%^&*()_+{}|:;<>,.?~\\-]{8,}$/
+
+const toggleValidity = (htmlElement, valid) => {
+  if (valid) {
+    htmlElement.classList.add('valid')
+    htmlElement.classList.remove('invalid')
   } else {
-    emailInput.classList.add('valid')
-    emailInput.classList.remove('invalid')
+    htmlElement.classList.remove('valid')
+    htmlElement.classList.add('invalid')
   }
-})
+}
 
-emailInput.addEventListener('input', () => {
-  if (emailInput.value != '' && !emailInput.validity.typeMismatch) {
-    emailInvalidMessage.textContent = ''
-    emailInput.classList.add('valid')
-    emailInput.classList.remove('invalid')
+const validConstraints = (constraints) => {
+  for (const constrainst of constraints) {
+    if (constrainst() == false) return false
   }
-})
+  return true
+}
 
-countrySelect.addEventListener('focusout', () => {
-  if (countrySelect.value == '') {
-    countryInvalidMessage.textContent = 'please select a country'
-    countrySelect.classList.remove('valid')
-    countrySelect.classList.add('invalid')
-  } else {
-    countrySelect.classList.add('valid')
-    countrySelect.classList.remove('invalid')
-  }
-})
+const addListeners = (
+  inputElement,
+  invalidMessageElement,
+  constraints,
+  textMessage
+) => {
+  inputElement.addEventListener('focusout', () => {
+    if (!validConstraints(constraints)) {
+      invalidMessageElement.textContent = textMessage
+      toggleValidity(inputElement, false)
+    } else {
+      toggleValidity(inputElement, true)
+    }
+  })
 
-countrySelect.addEventListener('input', () => {
-  if (countrySelect.value != '') {
-    countryInvalidMessage.textContent = ''
-    countrySelect.classList.add('valid')
-    countrySelect.classList.remove('invalid')
-  }
-})
+  inputElement.addEventListener('input', () => {
+    if (validConstraints(constraints)) {
+      invalidMessageElement.textContent = ''
+      toggleValidity(inputElement, true)
+    }
+  })
+}
 
-inputZipCode.addEventListener('focusout', () => {
-  let regex = /^\d{5}(?:-\d{4})?$/
-  if (!regex.test(inputZipCode.value)) {
-    zipInvalidMessage.textContent =
-      'zip codes can only have this formats XXXXX or XXXXX-XXXX, X being a digit'
-  }
-})
+addListeners(
+  emailInput,
+  emailInvalidMessage,
+  [() => emailInput.value != '', () => !emailInput.validity.typeMismatch],
+  'provide a valid email, with this format email@example'
+)
 
-inputZipCode.addEventListener('input', () => {
-  let regex = /^\d{5}(?:-\d{4})?$/
-  if (regex.test(inputZipCode.value)) {
-    zipInvalidMessage.textContent = ''
-  }
-})
+addListeners(
+  countrySelect,
+  countryInvalidMessage,
+  [() => countrySelect.value != ''],
+  'please select a country'
+)
 
-passwordInput.addEventListener('focusout', () => {
-  let regex =
-    /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+{}|:;<>,.?~\\-])[A-Za-z\d!@#$%^&*()_+{}|:;<>,.?~\\-]{8,}$/
-  if (!regex.test(passwordInput.value)) {
-    passInvalidMessage.textContent =
-      'provide a valid password of at least 8 characters, with at least one upper letter, one digit and one especial character(!@#$%^&*()_+{}|:;<>,.?~\\-)'
-  }
-})
+addListeners(
+  inputZipCode,
+  zipInvalidMessage,
+  [() => zipRegex.test(inputZipCode.value)],
+  'zip codes can only have this formats XXXXX or XXXXX-XXXX, X being a digit'
+)
 
-passwordInput.addEventListener('input', () => {
-  let regex =
-    /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+{}|:;<>,.?~\\-])[A-Za-z\d!@#$%^&*()_+{}|:;<>,.?~\\-]{8,}$/
-  if (regex.test(passwordInput.value)) {
-    passInvalidMessage.textContent = ''
-  }
-})
+addListeners(
+  passwordInput,
+  passInvalidMessage,
+  [() => passRegex.test(passwordInput.value)],
+  'provide a valid password of at least 8 characters, with at least one upper letter, one digit and one especial character(!@#$%^&*()_+{}|:;<>,.?~\\-)'
+)
 
-passwordConfInput.addEventListener('focusout', () => {
-  if (passwordConfInput.value != passwordInput.value) {
-    passConfInvalidMessage.textContent = 'passwords must match'
-  }
-})
-
-passwordConfInput.addEventListener('input', () => {
-  if (passwordConfInput.value == passwordInput.value) {
-    passConfInvalidMessage.textContent = ''
-  }
-})
+addListeners(
+  passwordConfInput,
+  passConfInvalidMessage,
+  [() => passwordConfInput.value == passwordInput.value],
+  'passwords must match'
+)
