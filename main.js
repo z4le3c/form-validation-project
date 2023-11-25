@@ -55,37 +55,62 @@ const addListeners = (
   })
 }
 
-addListeners(
-  emailInput,
-  emailInvalidMessage,
-  [() => emailInput.value != '', () => !emailInput.validity.typeMismatch],
-  'provide a valid email, with this format email@example'
-)
+const main = () => {
+  addListeners(
+    emailInput,
+    emailInvalidMessage,
+    [() => emailInput.value != '', () => !emailInput.validity.typeMismatch],
+    'provide a valid email, with this format email@example'
+  )
+  
+  addListeners(
+    countrySelect,
+    countryInvalidMessage,
+    [() => countrySelect.value != ''],
+    'please select a country'
+  )
+  
+  addListeners(
+    inputZipCode,
+    zipInvalidMessage,
+    [() => zipRegex.test(inputZipCode.value)],
+    'zip codes can only have this formats XXXXX or XXXXX-XXXX, X being a digit'
+  )
+  
+  addListeners(
+    passwordInput,
+    passInvalidMessage,
+    [() => passRegex.test(passwordInput.value)],
+    'provide a valid password of at least 8 characters, with at least one upper letter, one digit and one especial character(!@#$%^&*()_+{}|:;<>,.?~\\-)'
+  )
+  
+  addListeners(
+    passwordConfInput,
+    passConfInvalidMessage,
+    [() => passwordConfInput.value == passwordInput.value],
+    'passwords must match'
+  )
+}
 
-addListeners(
-  countrySelect,
-  countryInvalidMessage,
-  [() => countrySelect.value != ''],
-  'please select a country'
-)
+sendButton.addEventListener('click', (e) => {
+  e.preventDefault()
+  inputsToCheck = [
+    emailInput,
+    countrySelect,
+    inputZipCode,
+    passwordInput,
+    passwordConfInput
+  ]
+  const sendMessage = document.querySelector('.send-message')
+  for (const inputs of inputsToCheck) {
+    if (inputs.classList.contains('invalid') || inputs.value == '') {
+      sendMessage.textContent = 'There are invalid inputs'
+      sendMessage.style.color = 'red'
+      return
+    }
+  }
+  sendMessage.textContent = 'All in order'
+  sendMessage.style.color = 'green'
+})
 
-addListeners(
-  inputZipCode,
-  zipInvalidMessage,
-  [() => zipRegex.test(inputZipCode.value)],
-  'zip codes can only have this formats XXXXX or XXXXX-XXXX, X being a digit'
-)
-
-addListeners(
-  passwordInput,
-  passInvalidMessage,
-  [() => passRegex.test(passwordInput.value)],
-  'provide a valid password of at least 8 characters, with at least one upper letter, one digit and one especial character(!@#$%^&*()_+{}|:;<>,.?~\\-)'
-)
-
-addListeners(
-  passwordConfInput,
-  passConfInvalidMessage,
-  [() => passwordConfInput.value == passwordInput.value],
-  'passwords must match'
-)
+main()
